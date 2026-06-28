@@ -3,6 +3,8 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import firebaseConfigJson from '../../firebase-applet-config.json';
 
+const isCustomFirebase = !!import.meta.env.VITE_FIREBASE_API_KEY;
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || firebaseConfigJson.apiKey,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfigJson.authDomain,
@@ -13,6 +15,13 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfigJson.firestoreDatabaseId || import.meta.env.VITE_FIREBASE_DATABASE_ID);
+
+// If using custom Firebase in Vercel, default to '(default)' database unless specified
+// If using AI Studio Firebase, use the auto-generated database ID
+const databaseId = isCustomFirebase 
+  ? (import.meta.env.VITE_FIREBASE_DATABASE_ID || '(default)')
+  : firebaseConfigJson.firestoreDatabaseId;
+
+export const db = getFirestore(app, databaseId);
 export const auth = getAuth(app);
 

@@ -85,8 +85,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      alert(`Login failed: ${error.message}\nMake sure Google Sign-In is enabled in Firebase and this domain is authorized.`);
       // Fallback to anonymous if Google auth fails
       await signInAnonymously(auth);
     }
