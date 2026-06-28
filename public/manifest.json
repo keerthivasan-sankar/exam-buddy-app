@@ -1,0 +1,23 @@
+{
+  "name": "ExamBuddy",
+  "short_name": "ExamBuddy",
+  "description": "Student travel coordination platform for exam centers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=EB&backgroundColor=2563eb&textColor=ffffff",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=EB&backgroundColor=2563eb&textColor=ffffff",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
