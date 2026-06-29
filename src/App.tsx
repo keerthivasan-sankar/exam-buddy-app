@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Compass, Users, BookOpen, User as UserIcon, MessageCircle, MoreVertical, Ban, LogIn } from 'lucide-react';
+import { Compass, Users, BookOpen, User as UserIcon, MessageCircle, MoreVertical, Ban, LogIn, MapPin, Calendar } from 'lucide-react';
 import ExamsList from './components/ExamsList';
 import MatchList from './components/MatchList';
 import Profile from './components/Profile';
@@ -14,6 +14,7 @@ import AddExamModal from './components/AddExamModal';
 
 function Dashboard({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
   const [isExamModalOpen, setIsExamModalOpen] = useState(false);
+  const { exams } = useContext(AppContext);
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900 pb-24 md:pb-0">
@@ -63,6 +64,58 @@ function Dashboard({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
           </button>
         </div>
         
+        {/* Upcoming Exams */}
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Upcoming Exams</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
+          {exams.length > 0 ? (
+            exams.map((exam, index) => (
+              <motion.div 
+                key={exam.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                
+                <div className="flex justify-between items-start mb-4 md:mb-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{exam.examName}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center mt-1 font-medium">
+                      <Calendar size={14} className="mr-1.5 text-blue-500" />
+                      {new Date(exam.examDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </div>
+                  <span className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                    Upcoming
+                  </span>
+                </div>
+                
+                <div className="space-y-2 mt-4 pt-4 border-t border-gray-50 dark:border-gray-700">
+                  <div className="flex items-start text-sm text-gray-600 dark:text-gray-300">
+                    <MapPin size={16} className="mr-2 mt-0.5 text-gray-400 dark:text-gray-500 shrink-0" />
+                    <span>
+                      <span className="block font-medium text-gray-900 dark:text-gray-200 mb-0.5">{exam.examCity}</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs">{exam.examCenter}</span>
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full bg-white dark:bg-gray-800 rounded-2xl p-8 text-center border border-dashed border-gray-200 dark:border-gray-700">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">You haven't added any exams yet.</p>
+              <button 
+                onClick={() => setIsExamModalOpen(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-full shadow-sm hover:bg-blue-700 transition-colors inline-flex items-center text-sm font-medium"
+              >
+                <BookOpen size={16} className="mr-2" />
+                Add Your First Exam
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Safety Tips */}
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Safety Tips</h2>
         <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800/30 max-w-2xl">
