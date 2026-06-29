@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { User, Bell, ChevronRight, Shield, LogOut, Settings, Moon, Sun, Compass } from 'lucide-react';
 import { AppContext } from '../AppContext';
 import { motion } from 'motion/react';
@@ -9,6 +9,13 @@ export default function Profile() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { user, logout } = useContext(AppContext);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  useEffect(() => {
+    if ('Notification' in window) {
+      setNotificationsEnabled(Notification.permission === 'granted');
+    }
+  }, []);
 
   if (!user) return null;
 
@@ -102,15 +109,35 @@ export default function Profile() {
             <ChevronRight size={18} className="text-gray-400 dark:text-gray-500 group-hover:translate-x-1 transition-transform" />
           </button>
           
-          <button className="w-full bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-between active:scale-95 transition-all hover:border-gray-200 dark:hover:border-gray-600 group">
+          <div className="w-full bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-between group">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center mr-4 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
                 <Bell size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
               </div>
               <span className="font-semibold text-gray-800 dark:text-gray-200">Notifications</span>
             </div>
-            <ChevronRight size={18} className="text-gray-400 dark:text-gray-500 group-hover:translate-x-1 transition-transform" />
-          </button>
+            <button 
+              onClick={() => {
+                if ('Notification' in window) {
+                  if (Notification.permission === 'granted') {
+                    alert('Notifications are already enabled. You can disable them in your browser settings.');
+                  } else if (Notification.permission !== 'denied') {
+                    Notification.requestPermission().then(permission => {
+                      setNotificationsEnabled(permission === 'granted');
+                    });
+                  } else {
+                    alert('Notifications are blocked. Please enable them in your browser settings.');
+                  }
+                } else {
+                  alert('Your browser does not support notifications.');
+                }
+              }}
+              className={`w-14 h-7 rounded-full relative transition-colors ${notificationsEnabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'} shadow-inner`}
+            >
+              <div className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full shadow-sm flex items-center justify-center transition-transform ${notificationsEnabled ? 'translate-x-7' : 'translate-x-0'}`}>
+              </div>
+            </button>
+          </div>
         </div>
         
         <div className="mt-8 mb-4">
