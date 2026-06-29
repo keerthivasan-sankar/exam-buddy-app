@@ -32,11 +32,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubscribeUser: (() => void) | undefined;
+    let unsubscribeExams: (() => void) | undefined;
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (unsubscribeUser) unsubscribeUser();
+      if (unsubscribeExams) unsubscribeExams();
+
       if (firebaseUser) {
         // Fetch or create user document
         const userRef = doc(db, 'users', firebaseUser.uid);
-        const unsubscribeUser = onSnapshot(userRef, (docSnap) => {
+        unsubscribeUser = onSnapshot(userRef, (docSnap) => {
           if (docSnap.exists()) {
             setUser({ id: docSnap.id, ...docSnap.data() } as User);
           } else {
@@ -57,7 +63,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         // Listen to exams
         const q = query(collection(db, 'exams'), where('userId', '==', firebaseUser.uid));
-        const unsubscribeExams = onSnapshot(q, (snapshot) => {
+        unsubscribeExams = onSnapshot(q, (snapshot) => {
           const loadedExams: Exam[] = [];
           snapshot.forEach((doc) => {
             loadedExams.push({ id: doc.id, ...doc.data() } as Exam);
@@ -66,11 +72,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         });
 
         setLoading(false);
-
-        return () => {
-          unsubscribeUser();
-          unsubscribeExams();
-        };
       } else {
         setUser(null);
         setExams([]);
@@ -78,7 +79,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      if (unsubscribeUser) unsubscribeUser();
+      if (unsubscribeExams) unsubscribeExams();
+    };
   }, []);
 
   const login = async () => {
