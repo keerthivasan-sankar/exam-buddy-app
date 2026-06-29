@@ -21,8 +21,7 @@ export default function ChatRoom({ chat, onBack }: ChatRoomProps) {
 
     const q = query(
       collection(db, 'messages'),
-      where('chatId', '==', chat.id),
-      orderBy('timestamp', 'asc')
+      where('chatId', '==', chat.id)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -30,6 +29,8 @@ export default function ChatRoom({ chat, onBack }: ChatRoomProps) {
       snapshot.forEach((doc) => {
         loadedMessages.push({ id: doc.id, ...doc.data() } as Message);
       });
+      // Sort messages locally by timestamp to avoid requiring a composite index in Firestore
+      loadedMessages.sort((a, b) => a.timestamp - b.timestamp);
       setMessages(loadedMessages);
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
