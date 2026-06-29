@@ -5,6 +5,14 @@ import { db } from '../lib/firebase';
 import { AppContext } from '../AppContext';
 import { Chat, Message } from '../types';
 
+const getTimestamp = (ts: any) => {
+  if (!ts) return Date.now();
+  if (typeof ts === 'number') return ts;
+  if (typeof ts.toMillis === 'function') return ts.toMillis();
+  if (ts.seconds) return ts.seconds * 1000;
+  return 0;
+};
+
 interface ChatRoomProps {
   chat: Chat;
   onBack: () => void;
@@ -29,13 +37,6 @@ export default function ChatRoom({ chat, onBack }: ChatRoomProps) {
       snapshot.forEach((doc) => {
         loadedMessages.push({ id: doc.id, ...doc.data() } as Message);
       });
-      const getTimestamp = (ts: any) => {
-        if (!ts) return Date.now();
-        if (typeof ts === 'number') return ts;
-        if (typeof ts.toMillis === 'function') return ts.toMillis();
-        if (ts.seconds) return ts.seconds * 1000;
-        return 0;
-      };
       
       // Sort messages locally by timestamp to avoid requiring a composite index in Firestore
       loadedMessages.sort((a, b) => getTimestamp(a.timestamp) - getTimestamp(b.timestamp));
