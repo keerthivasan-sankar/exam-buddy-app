@@ -5,9 +5,14 @@
   "description": "Student travel coordination platform for exam centers.",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
   "background_color": "#ffffff",
   "theme_color": "#2563eb",
   "orientation": "any",
+  "categories": ["education", "travel", "productivity"],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
       "src": "/icon-192.png",

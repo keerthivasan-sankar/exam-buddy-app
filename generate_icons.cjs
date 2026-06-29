@@ -24,6 +24,11 @@ async function generateIcons() {
     .toFile(path.join(publicDir, 'icon-512.png'));
 
   await sharp(buffer)
+    .resize(32, 32)
+    .png()
+    .toFile(path.join(publicDir, 'favicon.ico'));
+
+  await sharp(buffer)
     .resize(1024, 1024)
     .png()
     .toFile(path.join(publicDir, 'icon.png'));
