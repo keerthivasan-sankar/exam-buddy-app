@@ -1,10 +1,10 @@
 {
-  "projectId": "fabled-sylph-xsjh2",
-  "appId": "1:884305535546:web:3b1a8e930e322bef2d4b03",
-  "apiKey": "AIzaSyCxXel5D7RokMsSdyxEW6hXpv_aoc4FMaQ",
-  "authDomain": "fabled-sylph-xsjh2.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-exambuddy-f3ed2f82-387a-40f6-8cef-45a372195554",
-  "storageBucket": "fabled-sylph-xsjh2.firebasestorage.app",
-  "messagingSenderId": "884305535546",
-  "measurementId": ""
+  "apiKey": "AIzaSyCMWhMv2-9lf7G4gVpqd6uZZzJDvNIeiSs",
+  "authDomain": "exam-buddy-app-e5876.firebaseapp.com",
+  "projectId": "exam-buddy-app-e5876",
+  "storageBucket": "exam-buddy-app-e5876.firebasestorage.app",
+  "messagingSenderId": "207158616311",
+  "appId": "1:207158616311:web:dadb8143b2f88d768873f2",
+  "measurementId": "G-FBDC2EE47X",
+  "firestoreDatabaseId": "(default)"
 }
