@@ -203,7 +203,14 @@ function ChatList() {
         }
         loadedChats.push(chatData);
       }
-      setChats(loadedChats.sort((a, b) => b.timestamp - a.timestamp));
+      const getTimestamp = (ts: any) => {
+        if (!ts) return Date.now();
+        if (typeof ts === 'number') return ts;
+        if (typeof ts.toMillis === 'function') return ts.toMillis();
+        if (ts.seconds) return ts.seconds * 1000;
+        return 0;
+      };
+      setChats(loadedChats.sort((a, b) => getTimestamp(b.timestamp) - getTimestamp(a.timestamp)));
     });
     return () => unsubscribe();
   }, [user]);
@@ -272,7 +279,7 @@ function ChatList() {
                       {chat.type === 'group' ? chat.name : chat.buddy?.name}
                     </h3>
                     <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap ml-2">
-                      {new Date(chat.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {new Date(chat.timestamp?.toMillis ? chat.timestamp.toMillis() : (chat.timestamp || Date.now())).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </span>
                   </div>
                   <p className="text-sm truncate text-gray-500 dark:text-gray-400">
