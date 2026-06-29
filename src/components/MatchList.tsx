@@ -27,32 +27,35 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
       const userIds = new Set<string>();
 
       try {
-        for (const myExam of exams) {
-          const q = query(
-            collection(db, 'exams'),
-            where('examCity', '==', myExam.examCity),
-            where('examName', '==', myExam.examName)
-          );
-          
-          const querySnapshot = await getDocs(q);
-          for (const document of querySnapshot.docs) {
-            const examData = { id: document.id, ...document.data() } as Exam;
-            if (examData.userId !== user.id) {
-              if (!userIds.has(examData.userId)) {
-                // Fetch user profile
-                const userDoc = await getDoc(doc(db, 'users', examData.userId));
-                if (userDoc.exists()) {
-                  const buddyUser = { id: userDoc.id, ...userDoc.data() } as User;
-                  newMatches.push({
-                    buddy: buddyUser,
-                    exam: myExam // Reference to my exam for grouping
-                  });
-                  userIds.add(examData.userId);
+        const querySnapshot = await getDocs(collection(db, 'exams'));
+        
+        for (const document of querySnapshot.docs) {
+          const examData = { id: document.id, ...document.data() } as Exam;
+          if (examData.userId !== user.id) {
+            // Check if this exam matches any of my exams (case-insensitive)
+            for (const myExam of exams) {
+              if (
+                examData.examCity?.toLowerCase() === myExam.examCity?.toLowerCase() &&
+                examData.examName?.toLowerCase() === myExam.examName?.toLowerCase()
+              ) {
+                if (!userIds.has(examData.userId)) {
+                  // Fetch user profile
+                  const userDoc = await getDoc(doc(db, 'users', examData.userId));
+                  if (userDoc.exists()) {
+                    const buddyUser = { id: userDoc.id, ...userDoc.data() } as User;
+                    newMatches.push({
+                      buddy: buddyUser,
+                      exam: myExam // Reference to my exam for grouping
+                    });
+                    userIds.add(examData.userId);
+                  }
                 }
+                break; // No need to match this exam to my other exams
               }
             }
           }
         }
+        
         setMatches(newMatches);
       } catch (error) {
         console.error("Error fetching matches:", error);
@@ -92,7 +95,26 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
   const createDirectChat = async (buddyId: string) => {
     if (!user) return;
     try {
-      // Check if chat exists (simplified)
+      // Check if chat exists
+      const chatsRef = collection(db, 'chats');
+      const q = query(chatsRef, where('type', '==', 'direct'), where('participants', 'array-contains', user.id));
+      const querySnapshot = await getDocs(q);
+      
+      let existingChatId = null;
+      for (const document of querySnapshot.docs) {
+        const data = document.data();
+        if (data.participants.includes(buddyId)) {
+          existingChatId = document.id;
+          break;
+        }
+      }
+
+      if (existingChatId) {
+        // Chat already exists, just switch to chat tab
+        if (setActiveTab) setActiveTab('chat');
+        return;
+      }
+
       await addDoc(collection(db, 'chats'), {
         type: 'direct',
         participants: [user.id, buddyId],

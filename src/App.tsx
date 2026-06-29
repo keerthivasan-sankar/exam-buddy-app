@@ -7,14 +7,50 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from './hooks/useTheme';
 import { AppContext } from './AppContext';
 import { db } from './lib/firebase';
-import { query, collection, where, onSnapshot, getDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { query, collection, where, onSnapshot, getDoc, doc, deleteDoc, updateDoc, getDocs } from 'firebase/firestore';
 import { Chat, User } from './types';
 
 import AddExamModal from './components/AddExamModal';
 
 function Dashboard({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
   const [isExamModalOpen, setIsExamModalOpen] = useState(false);
-  const { exams } = useContext(AppContext);
+  const { exams, user } = useContext(AppContext);
+  const [matchCount, setMatchCount] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchMatchCount = async () => {
+      if (!user || exams.length === 0) {
+        setMatchCount(0);
+        return;
+      }
+      
+      const userIds = new Set<string>();
+      try {
+        const querySnapshot = await getDocs(collection(db, 'exams'));
+        
+        for (const document of querySnapshot.docs) {
+          const examData = document.data();
+          if (examData.userId !== user.id) {
+            // Check if this exam matches any of my exams (case-insensitive)
+            for (const myExam of exams) {
+              if (
+                examData.examCity?.toLowerCase() === myExam.examCity?.toLowerCase() &&
+                examData.examName?.toLowerCase() === myExam.examName?.toLowerCase()
+              ) {
+                userIds.add(examData.userId);
+                break; // No need to check other exams if it already matches one
+              }
+            }
+          }
+        }
+        
+        setMatchCount(userIds.size);
+      } catch (error) {
+        console.error("Error fetching matches count", error);
+      }
+    };
+    fetchMatchCount();
+  }, [user, exams]);
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900 pb-24 md:pb-0">
@@ -32,7 +68,7 @@ function Dashboard({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
           <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-purple-500/20 shadow-lg flex justify-between items-center">
             <div>
               <h3 className="text-purple-100 text-sm font-semibold uppercase tracking-wider mb-1">Buddies Matched</h3>
-              <p className="text-4xl font-bold">14</p>
+              <p className="text-4xl font-bold">{matchCount}</p>
             </div>
             <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
               <Users size={28} className="text-white" />
