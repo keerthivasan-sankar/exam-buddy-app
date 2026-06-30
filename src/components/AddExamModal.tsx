@@ -8,16 +8,36 @@ export default function AddExamModal({ isOpen, onClose }: { isOpen: boolean; onC
   const [examDate, setExamDate] = useState('');
   const [examCity, setExamCity] = useState('');
   const [examCenter, setExamCenter] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!examName || !examDate || !examCity || !examCenter) return;
+    setError('');
+
+    const trimmedName = examName.trim();
+    const trimmedCity = examCity.trim();
+    const trimmedCenter = examCenter.trim();
+
+    if (!trimmedName || !examDate || !trimmedCity || !trimmedCenter) {
+      setError('All fields are required.');
+      return;
+    }
+
+    const [year, month, day] = examDate.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      setError('Exam date cannot be in the past.');
+      return;
+    }
     
     addExam({
-      examName,
+      examName: trimmedName,
       examDate,
-      examCity,
-      examCenter
+      examCity: trimmedCity,
+      examCenter: trimmedCenter
     });
     
     // Reset and close
@@ -25,12 +45,18 @@ export default function AddExamModal({ isOpen, onClose }: { isOpen: boolean; onC
     setExamDate('');
     setExamCity('');
     setExamCenter('');
+    setError('');
     onClose();
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Add New Exam">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100">
+            {error}
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Exam Name</label>
           <input 
