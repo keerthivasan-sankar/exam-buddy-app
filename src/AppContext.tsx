@@ -53,13 +53,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               gender: '',
               homeCity: '',
               avatar: firebaseUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${firebaseUser.uid}`,
-              verified: false
+              verified: false,
+              isOnline: true,
+              lastActive: Date.now()
             };
             setDoc(userRef, defaultUser).then(() => {
               setUser({ id: firebaseUser.uid, ...defaultUser } as User);
             });
           }
         });
+
+        // Set online status
+        updateDoc(userRef, { isOnline: true, lastActive: Date.now() }).catch(() => {});
+
+        const handleUnload = () => {
+          updateDoc(userRef, { isOnline: false, lastActive: Date.now() }).catch(() => {});
+        };
+        window.addEventListener('beforeunload', handleUnload);
 
         // Listen to exams
         const q = query(collection(db, 'exams'), where('userId', '==', firebaseUser.uid));
@@ -107,6 +117,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const logout = async () => {
+    if (user) {
+      try {
+        const userRef = doc(db, 'users', user.id);
+        await updateDoc(userRef, { isOnline: false, lastActive: Date.now() });
+      } catch (error) {
+        console.error('Error setting offline status', error);
+      }
+    }
     await signOut(auth);
   };
 

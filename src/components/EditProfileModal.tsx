@@ -11,6 +11,12 @@ export default function EditProfileModal({ isOpen, onClose }: { isOpen: boolean;
   const [gender, setGender] = useState('');
   const [preferredTransport, setPreferredTransport] = useState('');
   const [preferredLanguage, setPreferredLanguage] = useState('');
+  const [bio, setBio] = useState('');
+  const [studyStyle, setStudyStyle] = useState('');
+  const [availability, setAvailability] = useState('');
+  const [preferredStudyTime, setPreferredStudyTime] = useState('');
+  const [timeZone, setTimeZone] = useState('');
+  const [targetScore, setTargetScore] = useState('');
   const [avatar, setAvatar] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -21,6 +27,12 @@ export default function EditProfileModal({ isOpen, onClose }: { isOpen: boolean;
       setGender(user.gender || '');
       setPreferredTransport(user.preferredTransport || '');
       setPreferredLanguage(user.preferredLanguage || '');
+      setBio(user.bio || '');
+      setStudyStyle(user.studyStyle || '');
+      setAvailability(user.availability || '');
+      setPreferredStudyTime(user.preferredStudyTime || '');
+      setTimeZone(user.timeZone || '');
+      setTargetScore(user.targetScore || '');
       setAvatar(user.avatar || '');
     }
   }, [user]);
@@ -47,6 +59,12 @@ export default function EditProfileModal({ isOpen, onClose }: { isOpen: boolean;
       gender,
       preferredTransport,
       preferredLanguage,
+      bio,
+      studyStyle,
+      availability,
+      preferredStudyTime,
+      timeZone,
+      targetScore,
       avatar
     });
     
@@ -133,6 +151,76 @@ export default function EditProfileModal({ isOpen, onClose }: { isOpen: boolean;
             onChange={(e) => setPreferredLanguage(e.target.value)}
             className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
             placeholder="e.g. English, Spanish"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bio</label>
+          <textarea 
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
+            placeholder="Tell us a little about yourself"
+            rows={3}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Study Style</label>
+          <select 
+            value={studyStyle}
+            onChange={(e) => setStudyStyle(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
+          >
+            <option value="">Select Study Style</option>
+            <option value="Visual">Visual</option>
+            <option value="Auditory">Auditory</option>
+            <option value="Reading/Writing">Reading/Writing</option>
+            <option value="Kinesthetic">Kinesthetic</option>
+            <option value="Group">Group</option>
+            <option value="Solo">Solo</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Availability</label>
+          <input 
+            type="text" 
+            value={availability}
+            onChange={(e) => setAvailability(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
+            placeholder="e.g. Weekends, Evenings"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Preferred Study Time</label>
+          <select 
+            value={preferredStudyTime}
+            onChange={(e) => setPreferredStudyTime(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
+          >
+            <option value="">Select Time</option>
+            <option value="Morning">Morning</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Evening">Evening</option>
+            <option value="Night">Night</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Time Zone</label>
+          <input 
+            type="text" 
+            value={timeZone}
+            onChange={(e) => setTimeZone(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
+            placeholder="e.g. EST, PST, GMT"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Target Score</label>
+          <input 
+            type="text" 
+            value={targetScore}
+            onChange={(e) => setTargetScore(e.target.value)}
+            className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-gray-900 dark:text-white"
+            placeholder="e.g. 90%, A+, 700"
           />
         </div>
         <div className="pt-4">

@@ -72,6 +72,43 @@ export default function Profile() {
             </div>
           </div>
         </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 hover:shadow-md transition-shadow">
+          <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 tracking-tight flex items-center">
+            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+              <User size={16} className="text-blue-600 dark:text-blue-400" />
+            </div>
+            Study Profile
+          </h3>
+          <div className="space-y-4 ml-11">
+            {user.bio && (
+              <div className="pb-3 border-b border-gray-50 dark:border-gray-700">
+                <span className="block text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Bio</span>
+                <p className="text-gray-900 dark:text-white text-sm bg-gray-50 dark:bg-gray-700 p-3 rounded-xl">{user.bio}</p>
+              </div>
+            )}
+            <div className="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
+              <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">Study Style</span>
+              <span className="text-gray-900 dark:text-white text-sm font-bold bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-lg">{user.studyStyle || 'Not set'}</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
+              <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">Availability</span>
+              <span className="text-gray-900 dark:text-white text-sm font-bold bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-lg">{user.availability || 'Not set'}</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
+              <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">Preferred Time</span>
+              <span className="text-gray-900 dark:text-white text-sm font-bold bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-lg">{user.preferredStudyTime || 'Not set'}</span>
+            </div>
+            <div className="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
+              <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">Time Zone</span>
+              <span className="text-gray-900 dark:text-white text-sm font-bold bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-lg">{user.timeZone || 'Not set'}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">Target Score</span>
+              <span className="text-gray-900 dark:text-white text-sm font-bold bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-lg">{user.targetScore || 'Not set'}</span>
+            </div>
+          </div>
+        </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 hover:shadow-md transition-shadow">
           <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 tracking-tight flex items-center">

@@ -8,6 +8,14 @@ export interface User {
   verified: boolean;
   preferredTransport?: string;
   preferredLanguage?: string;
+  bio?: string;
+  studyStyle?: string;
+  availability?: string;
+  preferredStudyTime?: string;
+  timeZone?: string;
+  targetScore?: string;
+  isOnline?: boolean;
+  lastActive?: number;
 }
 
 export interface Exam {

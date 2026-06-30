@@ -13,6 +13,9 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
 
   const [genderFilter, setGenderFilter] = useState<string>('Any');
   const [searchQuery, setSearchQuery] = useState('');
+  const [studyTimeFilter, setStudyTimeFilter] = useState<string>('Any');
+  const [timeZoneFilter, setTimeZoneFilter] = useState<string>('');
+  const [targetScoreFilter, setTargetScoreFilter] = useState<string>('');
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -137,8 +140,11 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
       match.exam.examCity.toLowerCase().includes(searchLower);
       
     const matchesGender = genderFilter === 'Any' || match.buddy.gender === genderFilter;
+    const matchesStudyTime = studyTimeFilter === 'Any' || match.buddy.preferredStudyTime === studyTimeFilter;
+    const matchesTimeZone = !timeZoneFilter || match.buddy.timeZone?.toLowerCase().includes(timeZoneFilter.toLowerCase());
+    const matchesTargetScore = !targetScoreFilter || match.buddy.targetScore?.toLowerCase().includes(targetScoreFilter.toLowerCase());
     
-    return matchesSearch && matchesGender;
+    return matchesSearch && matchesGender && matchesStudyTime && matchesTimeZone && matchesTargetScore;
   });
 
   return (
@@ -146,7 +152,7 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
       <div className="bg-white dark:bg-gray-800 px-6 md:px-8 pt-12 md:pt-8 pb-4 shadow-sm sticky top-0 z-10 flex justify-center">
         <div className="w-full max-w-5xl">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">Find Buddies</h1>
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3 mb-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input 
@@ -167,6 +173,33 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <select
+              value={studyTimeFilter}
+              onChange={(e) => setStudyTimeFilter(e.target.value)}
+              className="bg-gray-100 dark:bg-gray-700 border-none rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-gray-100 font-medium cursor-pointer flex-1 min-w-[140px]"
+            >
+              <option value="Any">Any Study Time</option>
+              <option value="Morning">Morning</option>
+              <option value="Afternoon">Afternoon</option>
+              <option value="Evening">Evening</option>
+              <option value="Night">Night</option>
+            </select>
+            <input 
+              type="text" 
+              value={timeZoneFilter}
+              onChange={(e) => setTimeZoneFilter(e.target.value)}
+              placeholder="Time Zone (e.g. EST)" 
+              className="bg-gray-100 dark:bg-gray-700 border-none rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 font-medium flex-1 min-w-[140px]"
+            />
+            <input 
+              type="text" 
+              value={targetScoreFilter}
+              onChange={(e) => setTargetScoreFilter(e.target.value)}
+              placeholder="Target Score" 
+              className="bg-gray-100 dark:bg-gray-700 border-none rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 font-medium flex-1 min-w-[140px]"
+            />
           </div>
         </div>
       </div>
@@ -218,6 +251,9 @@ export default function MatchList({ setActiveTab }: { setActiveTab?: (tab: strin
                 <div className="flex items-center mb-5">
                   <div className="relative mr-4">
                     <img src={match.buddy.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${match.buddy.id}`} alt={match.buddy.name} className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 border border-gray-100 dark:border-gray-600" />
+                    {match.buddy.isOnline && (
+                      <div className="absolute top-0 right-0 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full shadow-sm"></div>
+                    )}
                     {match.buddy.verified && (
                       <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-0.5 shadow-sm">
                         <ShieldCheck size={18} className="text-green-500 fill-green-100 dark:fill-green-900/30" />
