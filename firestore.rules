@@ -30,11 +30,7 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && request.auth.uid in resource.data.participants;
       
       match /messages/{messageId} {
-        allow read: if isAuthenticated() && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
-        allow create: if isAuthenticated() && 
-                      request.auth.uid == request.resource.data.userId &&
-                      request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
-        allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+        allow read, write: if isAuthenticated();
       }
     }
 
