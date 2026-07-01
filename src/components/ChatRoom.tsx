@@ -28,8 +28,7 @@ export default function ChatRoom({ chat, onBack }: ChatRoomProps) {
     if (!user || !chat) return;
 
     const q = query(
-      collection(db, 'messages'),
-      where('chatId', '==', chat.id)
+      collection(db, 'chats', chat.id, 'messages')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -59,7 +58,7 @@ export default function ChatRoom({ chat, onBack }: ChatRoomProps) {
     setNewMessage('');
 
     try {
-      await addDoc(collection(db, 'messages'), {
+      await addDoc(collection(db, 'chats', chat.id, 'messages'), {
         chatId: chat.id,
         userId: user.id,
         userName: user.name,
@@ -89,7 +88,7 @@ export default function ChatRoom({ chat, onBack }: ChatRoomProps) {
       const locationUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
       try {
-        await addDoc(collection(db, 'messages'), {
+        await addDoc(collection(db, 'chats', chat.id, 'messages'), {
           chatId: chat.id,
           userId: user.id,
           userName: user.name,
